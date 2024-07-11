@@ -20,6 +20,7 @@
 		DD03A28F2C3F9D66008252F5 /* AddPokemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03A28E2C3F9D66008252F5 /* AddPokemonView.swift */; };
 		DD03A2912C3F9DB4008252F5 /* AddPokemonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03A2902C3F9DB4008252F5 /* AddPokemonController.swift */; };
 		DD03A2972C3F9E2E008252F5 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = DD03A2962C3F9E2E008252F5 /* SnapKit */; };
+		DD03A2992C3FB4B5008252F5 /* PokemonListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03A2982C3FB4B5008252F5 /* PokemonListCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		DD03A28C2C3F9D50008252F5 /* PokemonListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListView.swift; sourceTree = "<group>"; };
 		DD03A28E2C3F9D66008252F5 /* AddPokemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPokemonView.swift; sourceTree = "<group>"; };
 		DD03A2902C3F9DB4008252F5 /* AddPokemonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPokemonController.swift; sourceTree = "<group>"; };
+		DD03A2982C3FB4B5008252F5 /* PokemonListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			children = (
 				DD03A28C2C3F9D50008252F5 /* PokemonListView.swift */,
 				DD03A28E2C3F9D66008252F5 /* AddPokemonView.swift */,
+				DD03A2982C3FB4B5008252F5 /* PokemonListCell.swift */,
 			);
 			path = PokemonView;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				DD03A27A2C3F805A008252F5 /* poketmonApp.xcdatamodeld in Sources */,
 				DD03A2882C3F9AE5008252F5 /* PhoneBook+CoreDataClass.swift in Sources */,
 				DD03A2892C3F9AE5008252F5 /* PhoneBook+CoreDataProperties.swift in Sources */,
+				DD03A2992C3FB4B5008252F5 /* PokemonListCell.swift in Sources */,
 				DD03A2912C3F9DB4008252F5 /* AddPokemonController.swift in Sources */,
 				DD03A28F2C3F9D66008252F5 /* AddPokemonView.swift in Sources */,
 				DD03A2722C3F805A008252F5 /* SceneDelegate.swift in Sources */,
