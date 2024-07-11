@@ -34,9 +34,7 @@ class PokemonListView: UIView {
   }
   
   func configureUI() {
-    [
-     pokemonList
-    ].forEach { self.addSubview($0) }
+    self.addSubview(pokemonList)
   }
   
   func setConstraints() {

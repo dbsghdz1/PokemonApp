@@ -14,6 +14,6 @@ public class PhoneBook: NSManagedObject {
   public static let className = "PhoneBook"
   public enum Key {
     static let name = "name"
-    static let phoneNumber = "010-0000-0000"
+    static let phoneNumber = "phoneNumber"
   }
 }

@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import CoreData
 
 class PokemonListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   var pokemonListView: PokemonListView!
+  var container: NSPersistentContainer!
   
   override func loadView() {
     super.loadView()
@@ -24,6 +26,16 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     super.viewDidLoad()
     view.backgroundColor = .systemBackground
     setUpTableView()
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    self.container = appDelegate.persistentContainer
+  }
+  
+  override func viewIsAppearing(_ animated: Bool) {
+    print("apperaring")
+    print(UserData.phoneBook.count)
+    readAllData()
+    pokemonListView.pokemonList.reloadData()
   }
   
   @objc
@@ -39,12 +51,32 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 10
+    return UserData.phoneBook.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonListCell.identifier, for: indexPath) as? PokemonListCell else { return UITableViewCell() }
+    let name = UserData.phoneBook.keys.sorted()
+    let image = UserData.imageArray.keys.sorted()
+    cell.pokemonView.image = UserData.imageArray[image[indexPath.row]]
+    cell.nameLabel.text = name[indexPath.row]
+    cell.phoneNumberLabel.text = UserData.phoneBook[name[indexPath.row]]
     return cell
+  }
+  
+  func readAllData() {
+    do {
+      let phoneBooks = try self.container.viewContext.fetch(PhoneBook.fetchRequest())
+      
+      for phoneBook in phoneBooks as [NSManagedObject] {
+        if let name = phoneBook.value(forKey: PhoneBook.Key.name) as? String,
+           let phoneNumber = phoneBook.value(forKey: PhoneBook.Key.phoneNumber) {
+          UserData.phoneBook[name] = phoneNumber as? String
+        }
+      }
+    } catch {
+      print("읽기 실패")
+    }
   }
 }
 

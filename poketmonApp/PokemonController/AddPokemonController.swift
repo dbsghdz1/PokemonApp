@@ -7,10 +7,13 @@
 // <Back 버튼 customButton
 
 import UIKit
+import CoreData
 
 import Alamofire
 
 class AddPokemonController: UIViewController {
+  
+  var container: NSPersistentContainer!
   
   let urlQueryItems: [URLQueryItem] = [
     URLQueryItem(name: "id", value: "25"),
@@ -39,12 +42,15 @@ class AddPokemonController: UIViewController {
     self.view = addPokemonView
     self.title = "연락처 추가"
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "적용", style: .plain, target: self, action: #selector(applyButtonTapped))
+    self.addPokemonView.createRandomImage.addTarget(self, action: #selector(createRandom), for: .touchUpInside)
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .systemBackground
-    fetchCurrentData()
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    self.container = appDelegate.persistentContainer
+    fetchCurrentData(3)
   }
   
   //서버 데이터 불러오기
@@ -54,8 +60,8 @@ class AddPokemonController: UIViewController {
     }
   }
   
-  private func fetchCurrentData() {
-    var urlComponents = URLComponents(string: "https://pokeapi.co/api/v2/pokemon/25")
+  private func fetchCurrentData(_ random: Int) {
+    var urlComponents = URLComponents(string: "https://pokeapi.co/api/v2/pokemon/\(random)")
     urlComponents?.queryItems = self.urlQueryItems
     
     guard let url = urlComponents?.url else {
@@ -72,7 +78,8 @@ class AddPokemonController: UIViewController {
           }
         }
       case .failure(_):
-        print("fail")
+        print(#function)
+        print("실패")
       }
     }
   }
@@ -85,12 +92,24 @@ class AddPokemonController: UIViewController {
           DispatchQueue.main.async {
             self.addPokemonView.randomImage.image = image
           }
-        } else {
-          print("Failed to convert data to image")
         }
-      case .failure(let error):
-        print("Failed to load image: \(error)")
+      case .failure(_):
+        print("이미지 가져오기실패")
       }
+    }
+  }
+  
+  func createNewCell(name: String, phoneNumber: String) {
+    guard let entity = NSEntityDescription.entity(forEntityName: PhoneBook.className, in: self.container.viewContext) else { return }
+    let newPhoneBook = NSManagedObject(entity: entity, insertInto: self.container.viewContext)
+    newPhoneBook.setValue(name, forKey: PhoneBook.Key.name)
+    newPhoneBook.setValue(phoneNumber, forKey: PhoneBook.Key.phoneNumber)
+    
+    do {
+      try self.container.viewContext.save()
+      print("성공")
+    } catch {
+      print("실패")
     }
   }
   
@@ -102,5 +121,18 @@ class AddPokemonController: UIViewController {
   @objc
   func applyButtonTapped() {
     self.navigationController?.popViewController(animated: true)
+    if let phoneNumber = addPokemonView.phoneNumberTextView.text,
+       let phoneName = addPokemonView.nameTextView.text {
+      createNewCell(name: phoneName, phoneNumber: phoneNumber)
+      UserData.phoneBook[phoneName] = phoneNumber
+      createNewCell(name: phoneName, phoneNumber: phoneNumber)
+      UserData.imageArray[phoneName] = addPokemonView.randomImage.image
+    }
+  }
+  
+  @objc
+  func createRandom() {
+    let randomNumber = Int.random(in: 1...1000)
+    fetchCurrentData(randomNumber)
   }
 }

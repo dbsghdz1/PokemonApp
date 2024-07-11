@@ -12,7 +12,7 @@ import SnapKit
 class PokemonListCell: UITableViewCell {
   static let identifier = "cell"
   
-  private lazy var pokemonView: UIImageView = {
+  lazy var pokemonView: UIImageView = {
     let imageView = UIImageView()
     imageView.layer.cornerRadius = 30
     imageView.layer.borderWidth = 1.0
@@ -20,13 +20,13 @@ class PokemonListCell: UITableViewCell {
     return imageView
   }()
   
-  private lazy var nameLabel: UILabel = {
+  lazy var nameLabel: UILabel = {
     let label = UILabel()
     label.text = "name"
     return label
   }()
   
-  private lazy var phoneNumberLabel: UILabel = {
+  lazy var phoneNumberLabel: UILabel = {
     let label = UILabel()
     label.text = "010-0000-0000"
     return label
