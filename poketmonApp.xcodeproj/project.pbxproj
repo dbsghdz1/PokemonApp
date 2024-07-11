@@ -21,6 +21,7 @@
 		DD03A2912C3F9DB4008252F5 /* AddPokemonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03A2902C3F9DB4008252F5 /* AddPokemonController.swift */; };
 		DD03A2972C3F9E2E008252F5 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = DD03A2962C3F9E2E008252F5 /* SnapKit */; };
 		DD03A2992C3FB4B5008252F5 /* PokemonListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03A2982C3FB4B5008252F5 /* PokemonListCell.swift */; };
+		DD03A29C2C3FE917008252F5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = DD03A29B2C3FE917008252F5 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD03A2972C3F9E2E008252F5 /* SnapKit in Frameworks */,
+				DD03A29C2C3FE917008252F5 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +134,7 @@
 			name = poketmonApp;
 			packageProductDependencies = (
 				DD03A2962C3F9E2E008252F5 /* SnapKit */,
+				DD03A29B2C3FE917008252F5 /* Alamofire */,
 			);
 			productName = poketmonApp;
 			productReference = DD03A26C2C3F805A008252F5 /* poketmonApp.app */;
@@ -163,6 +166,7 @@
 			mainGroup = DD03A2632C3F805A008252F5;
 			packageReferences = (
 				DD03A2952C3F9E2E008252F5 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				DD03A29A2C3FE917008252F5 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = DD03A26D2C3F805A008252F5 /* Products */;
 			projectDirPath = "";
@@ -423,6 +427,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		DD03A29A2C3FE917008252F5 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -430,6 +442,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DD03A2952C3F9E2E008252F5 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		DD03A29B2C3FE917008252F5 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DD03A29A2C3FE917008252F5 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 

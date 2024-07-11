@@ -13,7 +13,7 @@ import SnapKit
 
 class AddPokemonView: UIView {
   
-  private lazy var randomImage: UIImageView = {
+  lazy var randomImage: UIImageView = {
     let imageView = UIImageView()
     imageView.layer.cornerRadius = 100
     imageView.layer.borderWidth = 1.0

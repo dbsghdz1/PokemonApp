@@ -16,6 +16,7 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     pokemonListView = PokemonListView(frame: self.view.frame)
     self.view = pokemonListView
     self.title = "친구 목록"
+    self.navigationItem.backButtonTitle = "Back"
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addButtonTapped))
   }
   
