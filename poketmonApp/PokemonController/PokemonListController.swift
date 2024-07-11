@@ -16,13 +16,18 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     pokemonListView = PokemonListView(frame: self.view.frame)
     self.view = pokemonListView
     self.title = "친구 목록"
-    self.navigationItem.rightBarButtonItem = pokemonListView.addButton
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addButtonTapped))
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .systemBackground
     setUpTableView()
+  }
+  
+  @objc
+  func addButtonTapped() {
+    self.navigationController?.pushViewController(AddPokemonController(), animated: true)
   }
   
   func setUpTableView() {

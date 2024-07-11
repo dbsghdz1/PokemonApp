@@ -13,7 +13,6 @@ class PokemonListView: UIView {
   
   lazy var addButton: UIBarButtonItem = {
     let button = UIBarButtonItem()
-    button.title = "추가"
     button.tintColor = .gray
     return button
   }()
