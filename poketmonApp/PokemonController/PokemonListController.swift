@@ -14,7 +14,6 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
   var container: NSPersistentContainer!
   
   override func loadView() {
-//    super.loadView()
     pokemonListView = PokemonListView(frame: UIScreen.main.bounds)
     self.view = pokemonListView
     self.title = "친구 목록"
@@ -32,8 +31,6 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
   }
   
   override func viewIsAppearing(_ animated: Bool) {
-    print("apperaring")
-    print(UserData.phoneBook.count)
     readAllData()
     pokemonListView.pokemonList.reloadData()
   }
@@ -70,6 +67,7 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     viewController.navigationTitle = name[indexPath.row]
     viewController.pokemonName = name[indexPath.row]
     viewController.pokemonNumber = UserData.phoneBook[name[indexPath.row]]
+    viewController.checkPage = false
     navigationController?.pushViewController(viewController, animated: true)
     //Factory 패턴
   }

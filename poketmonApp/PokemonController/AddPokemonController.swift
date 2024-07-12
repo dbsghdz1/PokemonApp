@@ -15,7 +15,6 @@ class AddPokemonController: UIViewController {
   
   static func makeFactoryPattern() -> AddPokemonController {
     let viewController = AddPokemonController()
-     
     return viewController
   }
   
@@ -23,6 +22,7 @@ class AddPokemonController: UIViewController {
   var navigationTitle: String?
   var pokemonName: String?
   var pokemonNumber: String?
+  var checkPage: Bool? = true
   
   let urlQueryItems: [URLQueryItem] = [
     URLQueryItem(name: "id", value: "25"),
@@ -127,9 +127,24 @@ class AddPokemonController: UIViewController {
     
     do {
       try self.container.viewContext.save()
-      print("성공")
+      print("")
     } catch {
-      print("실패")
+      print("")
+    }
+  }
+  
+  func updateData(name: String, updateName: String) {
+    let fetchRequest = PhoneBook.fetchRequest()
+    fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+    
+    do {
+      let phoneBooks = try self.container.viewContext.fetch(fetchRequest)
+      for phoneBook in phoneBooks as [NSManagedObject] {
+        phoneBook.setValue(updateName, forKey: PhoneBook.Key.name)
+        try self.container.viewContext.save()
+      }
+    } catch {
+      print("수정실패")
     }
   }
   
@@ -140,13 +155,29 @@ class AddPokemonController: UIViewController {
   
   @objc
   func applyButtonTapped() {
-    self.navigationController?.popViewController(animated: true)
-    if let phoneNumber = addPokemonView.phoneNumberTextView.text,
-       let phoneName = addPokemonView.nameTextView.text {
-      createNewCell(name: phoneName, phoneNumber: phoneNumber)
-      UserData.phoneBook[phoneName] = phoneNumber
-      createNewCell(name: phoneName, phoneNumber: phoneNumber)
-      UserData.imageArray[phoneName] = addPokemonView.randomImage.image
+    if let checkPage = checkPage {
+      print(checkPage)
+      if checkPage {
+        self.navigationController?.popViewController(animated: true)
+        if let phoneNumber = addPokemonView.phoneNumberTextView.text,
+           let phoneName = addPokemonView.nameTextView.text {
+          createNewCell(name: phoneName, phoneNumber: phoneNumber)
+          UserData.phoneBook[phoneName] = phoneNumber
+          UserData.imageArray[phoneName] = addPokemonView.randomImage.image
+        }
+      } else {
+        if let phoneNumber = addPokemonView.phoneNumberTextView.text,
+           let phoneName = addPokemonView.nameTextView.text,
+           let pokemonName = pokemonName,
+           let pokemonNumber = pokemonNumber {
+          updateData(name: pokemonName, updateName: phoneName)
+          updateData(name: pokemonNumber, updateName: phoneNumber)
+          UserData.phoneBook[phoneName] = phoneNumber
+          UserData.phoneBook.removeValue(forKey: pokemonName)
+          UserData.imageArray[phoneName] = addPokemonView.randomImage.image
+          self.navigationController?.popViewController(animated: true)
+        }
+      }
     }
   }
   
