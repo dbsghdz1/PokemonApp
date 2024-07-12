@@ -3,7 +3,7 @@
 //  poketmonApp
 //
 //  Created by 김윤홍 on 7/11/24.
-//
+// super.loadView()를 호출하는 것은 적절하지 않다는 뜻!
 
 import UIKit
 import CoreData
@@ -14,8 +14,8 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
   var container: NSPersistentContainer!
   
   override func loadView() {
-    super.loadView()
-    pokemonListView = PokemonListView(frame: self.view.frame)
+//    super.loadView()
+    pokemonListView = PokemonListView(frame: UIScreen.main.bounds)
     self.view = pokemonListView
     self.title = "친구 목록"
     self.navigationItem.backButtonTitle = "Back"
@@ -62,6 +62,16 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     cell.nameLabel.text = name[indexPath.row]
     cell.phoneNumberLabel.text = UserData.phoneBook[name[indexPath.row]]
     return cell
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let viewController = AddPokemonController.makeFactoryPattern()
+    let name = UserData.phoneBook.keys.sorted()
+    viewController.navigationTitle = name[indexPath.row]
+    viewController.pokemonName = name[indexPath.row]
+    viewController.pokemonNumber = UserData.phoneBook[name[indexPath.row]]
+    navigationController?.pushViewController(viewController, animated: true)
+    //Factory 패턴
   }
   
   func readAllData() {

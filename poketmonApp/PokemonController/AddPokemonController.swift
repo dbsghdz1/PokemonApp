@@ -4,7 +4,7 @@
 //
 //  Created by 김윤홍 on 7/11/24.
 //
-// <Back 버튼 customButton
+// factory Pattern
 
 import UIKit
 import CoreData
@@ -13,7 +13,16 @@ import Alamofire
 
 class AddPokemonController: UIViewController {
   
+  static func makeFactoryPattern() -> AddPokemonController {
+    let viewController = AddPokemonController()
+     
+    return viewController
+  }
+  
   var container: NSPersistentContainer!
+  var navigationTitle: String?
+  var pokemonName: String?
+  var pokemonNumber: String?
   
   let urlQueryItems: [URLQueryItem] = [
     URLQueryItem(name: "id", value: "25"),
@@ -43,6 +52,17 @@ class AddPokemonController: UIViewController {
     self.title = "연락처 추가"
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "적용", style: .plain, target: self, action: #selector(applyButtonTapped))
     self.addPokemonView.createRandomImage.addTarget(self, action: #selector(createRandom), for: .touchUpInside)
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if let navigationTitle = navigationTitle,
+       let pokemonName = pokemonName,
+       let pokemonNumber = pokemonNumber {
+      addPokemonView.nameTextView.text = pokemonName
+      addPokemonView.phoneNumberTextView.text = pokemonNumber
+      self.title = navigationTitle
+    }
   }
   
   override func viewDidLoad() {
