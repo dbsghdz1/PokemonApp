@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class PokemonListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class PokemonListController: UIViewController {
 
   var pokemonListView: PokemonListView!
   var container: NSPersistentContainer!
@@ -47,6 +47,23 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     pokemonListView.pokemonList.rowHeight = 80
   }
   
+  func readAllData() {
+    do {
+      let phoneBooks = try self.container.viewContext.fetch(PhoneBook.fetchRequest())
+      
+      for phoneBook in phoneBooks as [NSManagedObject] {
+        if let name = phoneBook.value(forKey: PhoneBook.Key.name) as? String,
+           let phoneNumber = phoneBook.value(forKey: PhoneBook.Key.phoneNumber) {
+          UserData.phoneBook[name] = phoneNumber as? String
+        }
+      }
+    } catch {
+      print("읽기 실패")
+    }
+  }
+}
+
+extension PokemonListController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return UserData.phoneBook.count
   }
@@ -71,20 +88,4 @@ class PokemonListController: UIViewController, UITableViewDelegate, UITableViewD
     navigationController?.pushViewController(viewController, animated: true)
     //Factory 패턴
   }
-  
-  func readAllData() {
-    do {
-      let phoneBooks = try self.container.viewContext.fetch(PhoneBook.fetchRequest())
-      
-      for phoneBook in phoneBooks as [NSManagedObject] {
-        if let name = phoneBook.value(forKey: PhoneBook.Key.name) as? String,
-           let phoneNumber = phoneBook.value(forKey: PhoneBook.Key.phoneNumber) {
-          UserData.phoneBook[name] = phoneNumber as? String
-        }
-      }
-    } catch {
-      print("읽기 실패")
-    }
-  }
 }
-
