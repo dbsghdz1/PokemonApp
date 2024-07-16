@@ -3,5 +3,6 @@
     <entity name="PhoneBook" representedClassName="PhoneBook" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phoneNumber" optional="YES" attributeType="String"/>
+        <attribute name="pokemonImage" optional="YES" attributeType="Binary"/>
     </entity>
 </model>

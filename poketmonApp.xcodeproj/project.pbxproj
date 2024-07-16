@@ -58,8 +58,6 @@
 		DD03A2632C3F805A008252F5 = {
 			isa = PBXGroup;
 			children = (
-				DD03A2862C3F9AE5008252F5 /* PhoneBook+CoreDataClass.swift */,
-				DD03A2872C3F9AE5008252F5 /* PhoneBook+CoreDataProperties.swift */,
 				DD03A26E2C3F805A008252F5 /* poketmonApp */,
 				DD03A26D2C3F805A008252F5 /* Products */,
 			);
@@ -111,6 +109,8 @@
 		DD03A2942C3F9E08008252F5 /* PokemonModel */ = {
 			isa = PBXGroup;
 			children = (
+				DD03A2872C3F9AE5008252F5 /* PhoneBook+CoreDataProperties.swift */,
+				DD03A2862C3F9AE5008252F5 /* PhoneBook+CoreDataClass.swift */,
 				DD03A28A2C3F9C36008252F5 /* PokemonModel.swift */,
 			);
 			path = PokemonModel;
