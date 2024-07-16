@@ -4,7 +4,6 @@ import Alamofire
 
 class AddPokemonController: UIViewController {
   
-  let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   
   static func makeFactoryPattern() -> AddPokemonController {
@@ -12,31 +11,11 @@ class AddPokemonController: UIViewController {
     return viewController
   }
   
-  var container: NSPersistentContainer!
+  let container = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
   var navigationTitle: String?
   var pokemonName: String?
   var pokemonNumber: String?
   var checkPage: Bool? = true
-  
-  let urlQueryItems: [URLQueryItem] = [
-    URLQueryItem(name: "id", value: "25"),
-    URLQueryItem(name: "name", value: "pikachu"),
-    URLQueryItem(name: "height", value: "4"),
-    URLQueryItem(name: "weight", value: "60")
-  ]
-  
-  struct PokemonData: Decodable {
-    let id: Int
-    let name: String
-    let height: Int
-    let weight: Int
-    let sprites: Sprites
-    
-    struct Sprites: Decodable {
-      let front_default: String
-    }
-  }
-  
   var addPokemonView: AddPokemonView!
   
   override func loadView() {
@@ -72,8 +51,6 @@ class AddPokemonController: UIViewController {
   
   private func fetchCurrentData(_ random: Int) {
     var urlComponents = URLComponents(string: "https://pokeapi.co/api/v2/pokemon/\(random)")
-    urlComponents?.queryItems = self.urlQueryItems
-    
     guard let url = urlComponents?.url else {
       print("url이상함")
       return
@@ -110,7 +87,6 @@ class AddPokemonController: UIViewController {
   }
   
   func createNewCell(name: String, phoneNumber: String, image: Data) {
-    container = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
     guard let entity = NSEntityDescription.entity(forEntityName: "PhoneBook", in: self.container.viewContext) else { return }
     let newPhoneBook = PhoneBook(entity: entity, insertInto: self.container.viewContext)
     newPhoneBook.name = name
@@ -128,7 +104,7 @@ class AddPokemonController: UIViewController {
   func updateData(name: String, updateName: String) {
     let fetchRequest = PhoneBook.fetchRequest()
     fetchRequest.predicate = NSPredicate(format: "name == %@", name)
-    container = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
+    
     do {
       let phoneBooks = try self.container.viewContext.fetch(fetchRequest)
       for phoneBook in phoneBooks {

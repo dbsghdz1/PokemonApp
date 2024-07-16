@@ -3,6 +3,7 @@
 //  poketmonApp
 //
 //  Created by 김윤홍 on 7/11/24.
+//view controller에서 가장 중요한 건 AppLifeCycle
 
 import UIKit
 import CoreData
@@ -12,13 +13,17 @@ class PokemonListController: UIViewController {
   var pokemonListView: PokemonListView!
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   var models = [PhoneBook()]
-
+  let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
+  
   override func loadView() {
     pokemonListView = PokemonListView(frame: UIScreen.main.bounds)
     self.view = pokemonListView
     self.title = "친구 목록"
     self.navigationItem.backButtonTitle = "Back"
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addButtonTapped))
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가",
+                                                             style: .plain,
+                                                             target: self,
+                                                             action: #selector(addButtonTapped))
   }
   
   override func viewDidLoad() {
@@ -40,7 +45,8 @@ class PokemonListController: UIViewController {
   func setUpTableView() {
     pokemonListView.pokemonList.delegate = self
     pokemonListView.pokemonList.dataSource = self
-    pokemonListView.pokemonList.register(PokemonListCell.self, forCellReuseIdentifier: PokemonListCell.identifier)
+    pokemonListView.pokemonList.register(PokemonListCell.self,
+                                         forCellReuseIdentifier: PokemonListCell.identifier)
     pokemonListView.pokemonList.rowHeight = 80
   }
   
@@ -62,14 +68,24 @@ extension PokemonListController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonListCell.identifier, for: indexPath) as? PokemonListCell else { return UITableViewCell() }
-    
-    let phoneBook = models[indexPath.row]
-    cell.nameLabel.text = phoneBook.name
-    cell.phoneNumberLabel.text = phoneBook.phoneNumber
-    if let data = phoneBook.pokemonImage,
-       let image = UIImage(data: data) {
-      cell.pokemonView.image = image
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonListCell.identifier,
+                                                   for: indexPath) as? PokemonListCell
+    else { return UITableViewCell() }
+    let sortedModels = NSSortDescriptor(key: "name", ascending: true)
+    fetchRequest.sortDescriptors = [sortedModels]
+    do {
+      let phoneBooks = try context.fetch(fetchRequest)
+      let phoneBook = phoneBooks[indexPath.row]
+      cell.nameLabel.text = phoneBook.name
+      cell.nameLabel.text = phoneBook.name
+      cell.phoneNumberLabel.text = phoneBook.phoneNumber
+      if let data = phoneBook.pokemonImage,
+         let image = UIImage(data: data) {
+        cell.pokemonView.image = image
+      }
+      
+    } catch {
+      print("fail")
     }
     return cell
   }

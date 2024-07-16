@@ -17,7 +17,7 @@ class AddPokemonView: UIView {
     let imageView = UIImageView()
     imageView.layer.cornerRadius = 100
     imageView.layer.borderWidth = 1.0
-    imageView.layer.borderColor = CGColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+    imageView.layer.borderColor = UIColor.gray.cgColor
     
     return imageView
   }()
@@ -33,7 +33,8 @@ class AddPokemonView: UIView {
     let textView = UITextView()
     textView.layer.cornerRadius = 3
     textView.layer.borderWidth = 1
-    textView.layer.borderColor =  CGColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+    textView.font = .boldSystemFont(ofSize: 30)
+    textView.layer.borderColor = UIColor.gray.cgColor
     return textView
   }()
   
@@ -41,7 +42,8 @@ class AddPokemonView: UIView {
     let textView = UITextView()
     textView.layer.cornerRadius = 3
     textView.layer.borderWidth = 1
-    textView.layer.borderColor =  CGColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+    textView.font = .boldSystemFont(ofSize: 30)
+    textView.layer.borderColor = UIColor.gray.cgColor
     return textView
   }()
   

@@ -16,7 +16,7 @@ class PokemonListCell: UITableViewCell {
     let imageView = UIImageView()
     imageView.layer.cornerRadius = 30
     imageView.layer.borderWidth = 1.0
-    imageView.layer.borderColor = CGColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+    imageView.layer.borderColor = UIColor.gray.cgColor
     return imageView
   }()
   

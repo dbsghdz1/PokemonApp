@@ -11,16 +11,12 @@ import SnapKit
 
 class PokemonListView: UIView {
   
+  let pokemonList = UITableView()
+  
   lazy var addButton: UIBarButtonItem = {
     let button = UIBarButtonItem()
     button.tintColor = .gray
     return button
-  }()
-  
-  lazy var pokemonList: UITableView = {
-    let tableView = UITableView()
-    tableView.backgroundColor = .systemBackground
-    return tableView
   }()
   
   override init(frame: CGRect) {

@@ -1,7 +1,20 @@
 //
-//  PokemomModel.swift
+//  PokemonModel.swift
 //  poketmonApp
 //
-//  Created by 김윤홍 on 7/11/24.
+//  Created by 김윤홍 on 7/16/24.
 //
 
+import Foundation
+
+struct PokemonData: Decodable {
+  let id: Int
+  let name: String
+  let height: Int
+  let weight: Int
+  let sprites: Sprites
+  
+  struct Sprites: Decodable {
+    let front_default: String
+  }
+}
