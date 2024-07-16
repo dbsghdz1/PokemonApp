@@ -25,6 +25,12 @@ class AddPokemonController: UIViewController {
   override func loadView() {
     addPokemonView = AddPokemonView(frame: UIScreen.main.bounds)
     self.view = addPokemonView
+  }
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    view.backgroundColor = .systemBackground
+    setupViewData()
     self.title = "연락처 추가"
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "적용",
                                                              style: .plain,
@@ -33,12 +39,6 @@ class AddPokemonController: UIViewController {
     self.addPokemonView.createRandomImage.addTarget(self,
                                                     action: #selector(createRandom),
                                                     for: .touchUpInside)
-  }
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    view.backgroundColor = .systemBackground
-    setupViewData()
   }
   
   override func viewWillAppear(_ animated: Bool) {

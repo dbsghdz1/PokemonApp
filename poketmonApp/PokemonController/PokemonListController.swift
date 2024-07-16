@@ -4,6 +4,7 @@
 //
 //  Created by 김윤홍 on 7/11/24.
 //
+//
 
 import UIKit
 import CoreData
@@ -17,17 +18,17 @@ class PokemonListController: UIViewController {
   override func loadView() {
     pokemonListView = PokemonListView(frame: UIScreen.main.bounds)
     self.view = pokemonListView
+  }
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    view.backgroundColor = .systemBackground
     self.title = "친구 목록"
     self.navigationItem.backButtonTitle = "Back"
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가",
                                                              style: .plain,
                                                              target: self,
                                                              action: #selector(addButtonTapped))
-  }
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    view.backgroundColor = .systemBackground
     setUpTableView()
   }
   

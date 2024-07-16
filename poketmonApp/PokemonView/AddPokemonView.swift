@@ -20,7 +20,6 @@ class AddPokemonView: UIView {
     imageView.layer.borderColor = UIColor.gray.cgColor
     imageView.contentMode = .scaleAspectFit
     imageView.clipsToBounds = true
-    
     return imageView
   }()
   

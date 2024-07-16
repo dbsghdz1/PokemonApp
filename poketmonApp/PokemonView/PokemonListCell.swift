@@ -3,7 +3,7 @@
 //  poketmonApp
 //
 //  Created by 김윤홍 on 7/11/24.
-//
+//cell identifier class명
 
 import UIKit
 
