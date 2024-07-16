@@ -1,72 +1,86 @@
+//
+//  AddPokemonController.swift
+//  poketmonApp
+//
+//  Created by 김윤홍 on 7/11/24.
+//
+
 import UIKit
 import CoreData
 import Alamofire
 
 class AddPokemonController: UIViewController {
   
-  let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-  
   static func makeFactoryPattern() -> AddPokemonController {
-    let viewController = AddPokemonController()
-    return viewController
+    return AddPokemonController()
   }
   
-  let container = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
   var navigationTitle: String?
   var pokemonName: String?
   var pokemonNumber: String?
   var checkPage: Bool? = true
+  var pokemonImage: Data?
   var addPokemonView: AddPokemonView!
   
   override func loadView() {
     addPokemonView = AddPokemonView(frame: UIScreen.main.bounds)
     self.view = addPokemonView
     self.title = "연락처 추가"
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "적용", style: .plain, target: self, action: #selector(applyButtonTapped))
-    self.addPokemonView.createRandomImage.addTarget(self, action: #selector(createRandom), for: .touchUpInside)
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    if let navigationTitle = navigationTitle,
-       let pokemonName = pokemonName,
-       let pokemonNumber = pokemonNumber {
-      addPokemonView.nameTextView.text = pokemonName
-      addPokemonView.phoneNumberTextView.text = pokemonNumber
-      self.title = navigationTitle
-    }
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "적용",
+                                                             style: .plain,
+                                                             target: self,
+                                                             action: #selector(applyButtonTapped))
+    self.addPokemonView.createRandomImage.addTarget(self,
+                                                    action: #selector(createRandom),
+                                                    for: .touchUpInside)
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .systemBackground
-    fetchCurrentData(3)
+    setupViewData()
   }
   
-  private func fetchData<T: Decodable>(url: URL, completion: @escaping (Result<T, AFError>) -> Void) {
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if checkPage == true {
+      createRandom()
+    }
+  }
+  
+  private func setupViewData() {
+    if let navigationTitle = navigationTitle,
+       let pokemonName = pokemonName,
+       let pokemonNumber = pokemonNumber,
+       let pokemonImage = pokemonImage {
+      addPokemonView.nameTextView.text = pokemonName
+      addPokemonView.phoneNumberTextView.text = pokemonNumber
+      addPokemonView.randomImage.image = UIImage(data: pokemonImage)
+      self.title = navigationTitle
+    }
+  }
+  
+  private func fetchData<T: Decodable>(url: URL,
+                                       completion: @escaping (Result<T, AFError>) -> Void) {
     AF.request(url).responseDecodable(of: T.self) { response in
       completion(response.result)
     }
   }
   
-  private func fetchCurrentData(_ random: Int) {
-    var urlComponents = URLComponents(string: "https://pokeapi.co/api/v2/pokemon/\(random)")
-    guard let url = urlComponents?.url else {
-      print("url이상함")
+  private func fetchCurrentData() {
+    guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(Int.random(in: 1...1000))") else {
+      print("Invalid URL")
       return
     }
     
     fetchData(url: url) { (result: Result<PokemonData, AFError>) in
       switch result {
       case .success(let data):
-        DispatchQueue.main.async {
-          if let imageUrl = URL(string: data.sprites.front_default) {
-            self.loadImage(from: imageUrl)
-          }
+        if let imageUrl = URL(string: data.sprites.front_default) {
+          self.loadImage(from: imageUrl)
         }
       case .failure(_):
-        print(#function)
-        print("실패")
+        print("Failed to fetch data")
       }
     }
   }
@@ -81,72 +95,63 @@ class AddPokemonController: UIViewController {
           }
         }
       case .failure(_):
-        print("이미지 가져오기실패")
+        print("Failed to load image")
       }
     }
   }
   
-  func createNewCell(name: String, phoneNumber: String, image: Data) {
-    guard let entity = NSEntityDescription.entity(forEntityName: "PhoneBook", in: self.container.viewContext) else { return }
-    let newPhoneBook = PhoneBook(entity: entity, insertInto: self.container.viewContext)
-    newPhoneBook.name = name
-    newPhoneBook.phoneNumber = phoneNumber
-    newPhoneBook.pokemonImage = image
-    
+  private func saveContext() {
     do {
-      try self.container.viewContext.save()
+      try PokemonListController.context.save()
       print("Data saved successfully")
     } catch {
       print("Failed to save data")
     }
   }
   
-  func updateData(name: String, updateName: String) {
-    let fetchRequest = PhoneBook.fetchRequest()
+  func createNewCell(name: String, phoneNumber: String, image: Data) {
+    let newPhoneBook = PhoneBook(context: PokemonListController.context)
+    newPhoneBook.name = name
+    newPhoneBook.phoneNumber = phoneNumber
+    newPhoneBook.pokemonImage = image
+    saveContext()
+  }
+  
+  func updateData(name: String, updateName: String, updatePhoneNumber: String, updateImage: Data) {
+    let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
     fetchRequest.predicate = NSPredicate(format: "name == %@", name)
     
     do {
-      let phoneBooks = try self.container.viewContext.fetch(fetchRequest)
+      let phoneBooks = try PokemonListController.context.fetch(fetchRequest)
       for phoneBook in phoneBooks {
         phoneBook.name = updateName
-        try self.container.viewContext.save()
+        phoneBook.phoneNumber = updatePhoneNumber
+        phoneBook.pokemonImage = updateImage
+        try PokemonListController.context.save()
       }
     } catch {
-      print("수정실패")
+      print("Failed to update data")
     }
-  }
-  
-  @objc
-  func backButtonTapped() {
-    self.navigationController?.popViewController(animated: true)
   }
   
   @objc
   func applyButtonTapped() {
-    if let checkPage = checkPage {
-      if checkPage {
-        self.navigationController?.popViewController(animated: true)
-        if let phoneNumber = addPokemonView.phoneNumberTextView.text,
-           let phoneName = addPokemonView.nameTextView.text,
-           let image = addPokemonView.randomImage.image?.pngData() {
-          createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
-        }
-      } else {
-        if let phoneNumber = addPokemonView.phoneNumberTextView.text,
-           let phoneName = addPokemonView.nameTextView.text,
-           let pokemonName = pokemonName,
-           let pokemonNumber = pokemonNumber {
-          updateData(name: pokemonName, updateName: phoneName)
-          updateData(name: pokemonNumber, updateName: phoneNumber)
-          self.navigationController?.popViewController(animated: true)
-        }
+    guard let phoneNumber = addPokemonView.phoneNumberTextView.text,
+          let phoneName = addPokemonView.nameTextView.text,
+          let image = addPokemonView.randomImage.image?.pngData() else { return }
+    
+    if checkPage == true {
+      createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
+    } else {
+      if let pokemonName = pokemonName {
+        updateData(name: pokemonName, updateName: phoneName, updatePhoneNumber: phoneNumber, updateImage: image)
       }
     }
+    self.navigationController?.popViewController(animated: true)
   }
   
   @objc
   func createRandom() {
-    let randomNumber = Int.random(in: 1...1000)
-    fetchCurrentData(randomNumber)
+    fetchCurrentData()
   }
 }

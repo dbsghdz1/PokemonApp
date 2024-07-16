@@ -17,6 +17,8 @@ class PokemonListCell: UITableViewCell {
     imageView.layer.cornerRadius = 30
     imageView.layer.borderWidth = 1.0
     imageView.layer.borderColor = UIColor.gray.cgColor
+    imageView.contentMode = .scaleAspectFit
+    imageView.clipsToBounds = true
     return imageView
   }()
   

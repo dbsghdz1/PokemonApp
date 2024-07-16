@@ -1,9 +1,9 @@
 //
-//  ViewController.swift
+//  PokemonListController.swift
 //  poketmonApp
 //
 //  Created by 김윤홍 on 7/11/24.
-//view controller에서 가장 중요한 건 AppLifeCycle
+//
 
 import UIKit
 import CoreData
@@ -11,9 +11,8 @@ import CoreData
 class PokemonListController: UIViewController {
   
   var pokemonListView: PokemonListView!
-  let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-  var models = [PhoneBook()]
-  let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
+  static let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+  var models: [PhoneBook]?
   
   override func loadView() {
     pokemonListView = PokemonListView(frame: UIScreen.main.bounds)
@@ -32,14 +31,16 @@ class PokemonListController: UIViewController {
     setUpTableView()
   }
   
-  override func viewIsAppearing(_ animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
     readAllData()
-    pokemonListView.pokemonList.reloadData()
   }
   
   @objc
   func addButtonTapped() {
-    self.navigationController?.pushViewController(AddPokemonController(), animated: true)
+    let viewController = AddPokemonController.makeFactoryPattern()
+    viewController.checkPage = true
+    self.navigationController?.pushViewController(viewController, animated: true)
   }
   
   func setUpTableView() {
@@ -51,53 +52,47 @@ class PokemonListController: UIViewController {
   }
   
   func readAllData() {
+    let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
+    fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+    
     do {
-      models = try context.fetch(PhoneBook.fetchRequest())
+      models = try PokemonListController.context.fetch(fetchRequest)
       DispatchQueue.main.async {
         self.pokemonListView.pokemonList.reloadData()
       }
     } catch {
-      print("읽기 실패")
+      print("Failed to fetch data")
     }
   }
 }
 
 extension PokemonListController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return models.count
+    return models?.count ?? 0
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonListCell.identifier,
                                                    for: indexPath) as? PokemonListCell
     else { return UITableViewCell() }
-    let sortedModels = NSSortDescriptor(key: "name", ascending: true)
-    fetchRequest.sortDescriptors = [sortedModels]
-    do {
-      let phoneBooks = try context.fetch(fetchRequest)
-      let phoneBook = phoneBooks[indexPath.row]
-      cell.nameLabel.text = phoneBook.name
-      cell.nameLabel.text = phoneBook.name
-      cell.phoneNumberLabel.text = phoneBook.phoneNumber
-      if let data = phoneBook.pokemonImage,
-         let image = UIImage(data: data) {
-        cell.pokemonView.image = image
-      }
-      
-    } catch {
-      print("fail")
+    let phoneBook = models![indexPath.row]
+    cell.nameLabel.text = phoneBook.name
+    cell.phoneNumberLabel.text = phoneBook.phoneNumber
+    if let data = phoneBook.pokemonImage,
+       let image = UIImage(data: data) {
+      cell.pokemonView.image = image
     }
     return cell
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let viewController = AddPokemonController.makeFactoryPattern()
-    let phoneBook = models[indexPath.row]
+    let phoneBook = models![indexPath.row]
     viewController.navigationTitle = phoneBook.name
     viewController.pokemonName = phoneBook.name
     viewController.pokemonNumber = phoneBook.phoneNumber
+    viewController.pokemonImage = phoneBook.pokemonImage
     viewController.checkPage = false
     navigationController?.pushViewController(viewController, animated: true)
-    //Factory 패턴
   }
 }
