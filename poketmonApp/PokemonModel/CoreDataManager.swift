@@ -14,15 +14,6 @@ class CoreDataManager {
   private init() {}
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   
-//  func saveContext() {
-//    do {
-//      try PokemonListController.context.save()
-//      print("Data saved successfully")
-//    } catch {
-//      print("Failed to save data")
-//    }
-//  }
-  //의심
   func saveContext() {
     if context.hasChanges {
       do {

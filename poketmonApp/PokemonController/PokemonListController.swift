@@ -11,7 +11,7 @@ import CoreData
 
 class PokemonListController: UIViewController {
   
-  var pokemonListView: PokemonListView!
+  var pokemonListView = PokemonListView(frame: .zero)
   var onNext: (([String], Data?) -> Void)?
   static let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   var models: [PhoneBook] = [] {
@@ -75,14 +75,7 @@ extension PokemonListController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//    let viewController = AddPokemonController.makeFactoryPattern()
     let phoneBook = models[indexPath.row]
-//    viewController.navigationTitle = phoneBook.name
-//    viewController.pokemonName = phoneBook.name
-//    viewController.pokemonNumber = phoneBook.phoneNumber
-//    viewController.pokemonImage = phoneBook.pokemonImage
-//    viewController.checkPage = false
-//    navigationController?.pushViewController(viewController, animated: true)
     var userInfo = [String]()
     if let name = phoneBook.name,
        let phoneNumber = phoneBook.phoneNumber {

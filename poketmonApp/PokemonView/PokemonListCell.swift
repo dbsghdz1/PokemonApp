@@ -66,7 +66,7 @@ class PokemonListCell: UITableViewCell {
     
     phoneNumberLabel.snp.makeConstraints { make in
       make.centerY.equalTo(pokemonView)
-      make.leading.equalTo(nameLabel.snp.trailing).offset(50)
+      make.trailing.equalToSuperview().inset(20)
     }
   }
 }

@@ -12,7 +12,7 @@ class AddPokemonController: UIViewController {
   let contatckCoreData = CoreDataManager.shared
   var receivedStrings: [String]?
   var receivedImage: Data?
-  var addPokemonView: AddPokemonView!
+  var addPokemonView = AddPokemonView(frame: .zero)
   
   override func loadView() {
     addPokemonView = AddPokemonView(frame: UIScreen.main.bounds)
@@ -33,10 +33,9 @@ class AddPokemonController: UIViewController {
                                                     for: .touchUpInside)
   }
 
+  
   private func setupViewData() {
-    if let receivedImage = receivedImage,
-       let name = receivedStrings?[0],
-       let number = receivedStrings?[1] {
+    if let receivedImage = receivedImage {
       addPokemonView.randomImage.image = UIImage(data: receivedImage)
       addPokemonView.nameTextView.text = receivedStrings?[0]
       addPokemonView.phoneNumberTextView.text = receivedStrings?[1]
