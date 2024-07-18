@@ -34,7 +34,8 @@ class PokemonListController: UIViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    readAllData()
+     models = CoreDataManager.shared.readAllData()
+    pokemonListView.pokemonList.reloadData()
   }
   
   @objc
@@ -50,20 +51,6 @@ class PokemonListController: UIViewController {
     pokemonListView.pokemonList.register(PokemonListCell.self,
                                          forCellReuseIdentifier: PokemonListCell.identifier)
     pokemonListView.pokemonList.rowHeight = 80
-  }
-  
-  func readAllData() {
-    let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
-    fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-    
-    do {
-      models = try PokemonListController.context.fetch(fetchRequest)
-      DispatchQueue.main.async {
-        self.pokemonListView.pokemonList.reloadData()
-      }
-    } catch {
-      print("Failed to fetch data")
-    }
   }
 }
 

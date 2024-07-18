@@ -15,6 +15,8 @@ class AddPokemonController: UIViewController {
     return AddPokemonController()
   }
   
+  let fetchNetWork = NetworkManager.shared
+  let contatckCoreData = CoreDataManager.shared
   var navigationTitle: String?
   var pokemonName: String?
   var pokemonNumber: String?
@@ -60,80 +62,6 @@ class AddPokemonController: UIViewController {
     }
   }
   
-  private func fetchData<T: Decodable>(url: URL,
-                                       completion: @escaping (Result<T, AFError>) -> Void) {
-    AF.request(url).responseDecodable(of: T.self) { response in
-      completion(response.result)
-    }
-  }
-  
-  private func fetchCurrentData() {
-    guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(Int.random(in: 1...1000))") else {
-      print("Invalid URL")
-      return
-    }
-    
-    fetchData(url: url) { (result: Result<PokemonData, AFError>) in
-      switch result {
-      case .success(let data):
-        if let imageUrl = URL(string: data.sprites.frontDefault) {
-          self.loadImage(from: imageUrl)
-        }
-      case .failure(_):
-        print("Failed to fetch data")
-      }
-    }
-  }
-  
-  private func loadImage(from url: URL) {
-    AF.request(url).responseData { response in
-      switch response.result {
-      case .success(let data):
-        if let image = UIImage(data: data) {
-          DispatchQueue.main.async {
-            self.addPokemonView.randomImage.image = image
-          }
-        }
-      case .failure(_):
-        print("Failed to load image")
-      }
-    }
-  }
-  
-  private func saveContext() {
-    do {
-      try PokemonListController.context.save()
-      print("Data saved successfully")
-    } catch {
-      print("Failed to save data")
-    }
-  }
-  
-  func createNewCell(name: String, phoneNumber: String, image: Data) {
-    let newPhoneBook = PhoneBook(context: PokemonListController.context)
-    newPhoneBook.name = name
-    newPhoneBook.phoneNumber = phoneNumber
-    newPhoneBook.pokemonImage = image
-    saveContext()
-  }
-  
-  func updateData(name: String, updateName: String, updatePhoneNumber: String, updateImage: Data) {
-    let fetchRequest: NSFetchRequest<PhoneBook> = PhoneBook.fetchRequest()
-    fetchRequest.predicate = NSPredicate(format: "name == %@", name)
-    
-    do {
-      let phoneBooks = try PokemonListController.context.fetch(fetchRequest)
-      for phoneBook in phoneBooks {
-        phoneBook.name = updateName
-        phoneBook.phoneNumber = updatePhoneNumber
-        phoneBook.pokemonImage = updateImage
-        try PokemonListController.context.save()
-      }
-    } catch {
-      print("Failed to update data")
-    }
-  }
-  
   @objc
   func applyButtonTapped() {
     guard let phoneNumber = addPokemonView.phoneNumberTextView.text,
@@ -141,10 +69,10 @@ class AddPokemonController: UIViewController {
           let image = addPokemonView.randomImage.image?.pngData() else { return }
     
     if checkPage == true {
-      createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
+      contatckCoreData.createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
     } else {
       if let pokemonName = pokemonName {
-        updateData(name: pokemonName, updateName: phoneName, updatePhoneNumber: phoneNumber, updateImage: image)
+        contatckCoreData.updateData(name: pokemonName, updateName: phoneName, updatePhoneNumber: phoneNumber, updateImage: image)
       }
     }
     self.navigationController?.popViewController(animated: true)
@@ -152,6 +80,24 @@ class AddPokemonController: UIViewController {
   
   @objc
   func createRandom() {
-    fetchCurrentData()
+    NetworkManager.shared.fetchCurrentData { result in
+      switch result {
+      case .success(let pokemonData):
+        if let imageUrl = URL(string: pokemonData.sprites.frontDefault) {
+          NetworkManager.shared.loadImage(from: imageUrl) { imageResult in
+            switch imageResult {
+            case .success(let image):
+              DispatchQueue.main.async {
+                self.addPokemonView.randomImage.image = image
+              }
+            case .failure(let error):
+              print("Failed to load image: \(error)")
+            }
+          }
+        }
+      case .failure(let error):
+        print("Failed to fetch data: \(error)")
+      }
+    }
   }
 }

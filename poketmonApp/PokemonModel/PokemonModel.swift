@@ -18,7 +18,7 @@ struct PokemonData: Decodable {
     let frontDefault: String
     
     enum CodingKeys: String, CodingKey {
-      case frontDefault = "frontDefault"
+      case frontDefault = "front_default"
     }
   }
 }
