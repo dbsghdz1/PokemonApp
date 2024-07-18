@@ -3,7 +3,7 @@
 //  poketmonApp
 //
 //  Created by 김윤홍 on 7/11/24.
-//
+// 1.콜백 패턴 적용? 일대다 관계에서 효과적이라는데....
 
 import UIKit
 import CoreData
@@ -76,7 +76,7 @@ class AddPokemonController: UIViewController {
     fetchData(url: url) { (result: Result<PokemonData, AFError>) in
       switch result {
       case .success(let data):
-        if let imageUrl = URL(string: data.sprites.front_default) {
+        if let imageUrl = URL(string: data.sprites.frontDefault) {
           self.loadImage(from: imageUrl)
         }
       case .failure(_):

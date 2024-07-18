@@ -15,6 +15,10 @@ struct PokemonData: Decodable {
   let sprites: Sprites
   
   struct Sprites: Decodable {
-    let front_default: String
+    let frontDefault: String
+    
+    enum CodingKeys: String, CodingKey {
+      case frontDefault = "frontDefault"
+    }
   }
 }
