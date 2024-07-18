@@ -13,7 +13,11 @@ class PokemonListController: UIViewController {
   
   var pokemonListView: PokemonListView!
   static let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-  var models: [PhoneBook]?
+  var models: [PhoneBook] = [] {
+    didSet {
+      pokemonListView.pokemonList.reloadData()
+    }
+  }
   
   override func loadView() {
     pokemonListView = PokemonListView(frame: UIScreen.main.bounds)
@@ -33,9 +37,7 @@ class PokemonListController: UIViewController {
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-     models = CoreDataManager.shared.readAllData()
-    pokemonListView.pokemonList.reloadData()
+    models = CoreDataManager.shared.readAllData()
   }
   
   @objc
@@ -56,14 +58,14 @@ class PokemonListController: UIViewController {
 
 extension PokemonListController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return models?.count ?? 0
+    return models.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonListCell.identifier,
                                                    for: indexPath) as? PokemonListCell
     else { return UITableViewCell() }
-    let phoneBook = models![indexPath.row]
+    let phoneBook = models[indexPath.row]
     cell.nameLabel.text = phoneBook.name
     cell.phoneNumberLabel.text = phoneBook.phoneNumber
     if let data = phoneBook.pokemonImage,
@@ -75,7 +77,7 @@ extension PokemonListController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let viewController = AddPokemonController.makeFactoryPattern()
-    let phoneBook = models![indexPath.row]
+    let phoneBook = models[indexPath.row]
     viewController.navigationTitle = phoneBook.name
     viewController.pokemonName = phoneBook.name
     viewController.pokemonNumber = phoneBook.phoneNumber
