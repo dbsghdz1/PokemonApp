@@ -3,25 +3,15 @@
 //  poketmonApp
 //
 //  Created by 김윤홍 on 7/11/24.
-// 1.콜백 패턴 적용? 일대다 관계에서 효과적이라는데....
 
 import UIKit
-import CoreData
-import Alamofire
 
 class AddPokemonController: UIViewController {
-  
-  static func makeFactoryPattern() -> AddPokemonController {
-    return AddPokemonController()
-  }
-  
+
   let fetchNetWork = NetworkManager.shared
   let contatckCoreData = CoreDataManager.shared
-  var navigationTitle: String?
-  var pokemonName: String?
-  var pokemonNumber: String?
-  var checkPage: Bool? = true
-  var pokemonImage: Data?
+  var receivedStrings: [String]?
+  var receivedImage: Data?
   var addPokemonView: AddPokemonView!
   
   override func loadView() {
@@ -31,8 +21,8 @@ class AddPokemonController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.backgroundColor = .systemBackground
     setupViewData()
+    view.backgroundColor = .systemBackground
     self.title = "연락처 추가"
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "적용",
                                                              style: .plain,
@@ -42,23 +32,15 @@ class AddPokemonController: UIViewController {
                                                     action: #selector(createRandom),
                                                     for: .touchUpInside)
   }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    if checkPage == true {
-      createRandom()
-    }
-  }
-  
+
   private func setupViewData() {
-    if let navigationTitle = navigationTitle,
-       let pokemonName = pokemonName,
-       let pokemonNumber = pokemonNumber,
-       let pokemonImage = pokemonImage {
-      addPokemonView.nameTextView.text = pokemonName
-      addPokemonView.phoneNumberTextView.text = pokemonNumber
-      addPokemonView.randomImage.image = UIImage(data: pokemonImage)
-      self.title = navigationTitle
+    if let receivedImage = receivedImage,
+       let name = receivedStrings?[0],
+       let number = receivedStrings?[1] {
+      addPokemonView.randomImage.image = UIImage(data: receivedImage)
+      addPokemonView.nameTextView.text = receivedStrings?[0]
+      addPokemonView.phoneNumberTextView.text = receivedStrings?[1]
+      self.title = receivedStrings?[0]
     }
   }
   
@@ -68,13 +50,11 @@ class AddPokemonController: UIViewController {
           let phoneName = addPokemonView.nameTextView.text,
           let image = addPokemonView.randomImage.image?.pngData() else { return }
     
-    if checkPage == true {
-      contatckCoreData.createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
-    } else {
-      if let pokemonName = pokemonName {
+      if let pokemonName = receivedStrings?[0] {
         contatckCoreData.updateData(name: pokemonName, updateName: phoneName, updatePhoneNumber: phoneNumber, updateImage: image)
+      } else {
+        contatckCoreData.createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
       }
-    }
     self.navigationController?.popViewController(animated: true)
   }
   
