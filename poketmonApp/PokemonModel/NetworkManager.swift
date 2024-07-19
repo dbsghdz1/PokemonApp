@@ -20,10 +20,7 @@ class NetworkManager {
   }
   
   func fetchCurrentData(completion: @escaping (Result<PokemonData, AFError>) -> Void) {
-    guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(Int.random(in: 1...1000))") else {
-      print("URL 이상함")
-      return
-    }
+    guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(Int.random(in: 1...1000))") else { return }
     
     fetchData(url: url, completion: completion)
   }

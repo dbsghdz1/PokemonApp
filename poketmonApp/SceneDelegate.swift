@@ -16,15 +16,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     guard let windowScene = scene as? UIWindowScene else { return }
     
-    let firstVC = PokemonListController()
-    firstVC.onNext = { strings, image  in
-      let secondVC = AddPokemonController()
-      secondVC.receivedStrings = strings
-      secondVC.receivedImage = image
-      firstVC.navigationController?.pushViewController(secondVC, animated: true)
+    let firstViewController = PokemonListController()
+    firstViewController.onNext = { strings, image  in
+      let secondViewController = AddPokemonController()
+      secondViewController.receivedStrings = strings
+      secondViewController.receivedImage = image
+      firstViewController.navigationController?.pushViewController(secondViewController,
+                                                                   animated: true)
     }
     
-    let navigationController = UINavigationController(rootViewController: firstVC)
+    let navigationController = UINavigationController(rootViewController: firstViewController)
     
     window = UIWindow(windowScene: windowScene)
     window?.rootViewController = navigationController

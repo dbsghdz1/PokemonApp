@@ -7,7 +7,7 @@
 import UIKit
 
 class AddPokemonController: UIViewController {
-
+  
   let fetchNetWork = NetworkManager.shared
   let contatckCoreData = CoreDataManager.shared
   var receivedStrings: [String]?
@@ -32,7 +32,6 @@ class AddPokemonController: UIViewController {
                                                     action: #selector(createRandom),
                                                     for: .touchUpInside)
   }
-
   
   private func setupViewData() {
     if let receivedImage = receivedImage {
@@ -49,21 +48,26 @@ class AddPokemonController: UIViewController {
           let phoneName = addPokemonView.nameTextView.text,
           let image = addPokemonView.randomImage.image?.pngData() else { return }
     
-      if let pokemonName = receivedStrings?[0] {
-        contatckCoreData.updateData(name: pokemonName, updateName: phoneName, updatePhoneNumber: phoneNumber, updateImage: image)
-      } else {
-        contatckCoreData.createNewCell(name: phoneName, phoneNumber: phoneNumber, image: image)
-      }
+    if let pokemonName = receivedStrings?[0] {
+      contatckCoreData.updateData(name: pokemonName,
+                                  updateName: phoneName,
+                                  updatePhoneNumber: phoneNumber,
+                                  updateImage: image)
+    } else {
+      contatckCoreData.createNewCell(name: phoneName,
+                                     phoneNumber: phoneNumber,
+                                     image: image)
+    }
     self.navigationController?.popViewController(animated: true)
   }
   
   @objc
   func createRandom() {
-    NetworkManager.shared.fetchCurrentData { result in
+    fetchNetWork.fetchCurrentData { result in
       switch result {
       case .success(let pokemonData):
         if let imageUrl = URL(string: pokemonData.sprites.frontDefault) {
-          NetworkManager.shared.loadImage(from: imageUrl) { imageResult in
+          self.fetchNetWork.loadImage(from: imageUrl) { imageResult in
             switch imageResult {
             case .success(let image):
               DispatchQueue.main.async {

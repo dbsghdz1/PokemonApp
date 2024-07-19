@@ -5,8 +5,6 @@
 //  Created by 김윤홍 on 7/11/24.
 //
 
-//스택뷰에 넣을까?
-
 import UIKit
 
 import SnapKit

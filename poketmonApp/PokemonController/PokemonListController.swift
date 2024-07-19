@@ -7,13 +7,11 @@
 //
 
 import UIKit
-import CoreData
 
 class PokemonListController: UIViewController {
   
   var pokemonListView = PokemonListView(frame: .zero)
   var onNext: (([String], Data?) -> Void)?
-  static let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   var models: [PhoneBook] = [] {
     didSet {
       pokemonListView.pokemonList.reloadData()
